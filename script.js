@@ -1,11 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Animasi untuk header
-    const header = document.querySelector('header');
-    header.style.opacity = '0';
-    setTimeout(() => {
-        header.style.transition = 'opacity 1s ease-in-out';
-        header.style.opacity = '1';
-    }, 100);
+   
 
     // Animasi untuk service cards
     const cards = document.querySelectorAll('.service-card');
@@ -13,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.opacity = '0';
         card.style.transform = 'translateY(50px)';
         setTimeout(() => {
-            card.style.transition = 'all 0.5s ease-in-out';
+            card.style.transition = 'all 0.5s ease-out';
             card.style.opacity = '1';
             card.style.transform = 'translateY(0)';
-        }, 300 + (index * 200));
+        }, 100 * index);
     });
 
     // Efek hover untuk tombol
@@ -42,4 +36,36 @@ document.addEventListener('DOMContentLoaded', function() {
             title.style.textShadow = '4px 4px 0 var(--secondary-color), 8px 8px 0 var(--accent-color)';
         }, 100);
     }, 3000);
+
+    // Hide dot navigation when reaching footer
+    const dotNav = document.querySelector('.dot-nav');
+    const footer = document.querySelector('.footer');
+    
+    function checkFooterVisibility() {
+        if (!dotNav || !footer) return;
+        
+        const footerTop = footer.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (footerTop <= windowHeight + 100) {
+            dotNav.classList.add('hidden');
+        } else {
+            dotNav.classList.remove('hidden');
+        }
+    }
+
+    // Check on scroll with throttling
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                checkFooterVisibility();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Initial check
+    checkFooterVisibility();
 }); 
