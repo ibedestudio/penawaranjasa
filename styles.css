@@ -1269,6 +1269,13 @@ h1, h2, h3, h4 {
     pointer-events: none;
 }
 
+/* Hide dot navigation on mobile devices */
+@media (max-width: 768px) {
+    .dot-nav {
+        display: none;
+    }
+}
+
 .dot-nav ul {
     list-style: none;
     padding: 0;
