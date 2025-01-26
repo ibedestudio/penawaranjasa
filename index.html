@@ -19,15 +19,16 @@
 <body>
     <nav class="dot-nav">
         <ul>
-            <li><a href="#" data-label="Beranda"><span class="dot"></span></a></li>
+            <li><a href="#hero" class="active" data-label="Home"><span class="dot"></span></a></li>
+            <li><a href="#problem" data-label="Problem"><span class="dot"></span></a></li>
             <li><a href="#services" data-label="Layanan"><span class="dot"></span></a></li>
-            <li><a href="#problem" data-label="Masalah"><span class="dot"></span></a></li>
+            <li><a href="#benefits" data-label="Benefit"><span class="dot"></span></a></li>
             <li><a href="#contact" data-label="Kontak"><span class="dot"></span></a></li>
         </ul>
     </nav>
 
     <main>
-        <section class="hero">
+        <section class="hero" id="hero">
             <div class="container">
                 <div class="hero-content">
                     <h1 class="mega-title">DIGITAL AGENCY UNTUK BISNISMU</h1>
@@ -62,7 +63,7 @@
                         </div>
                         <div class="solution-box">
                             <h3>Tenang, Kami Punya Solusinya!</h3>
-                            <p>Ibedes Studio adalah agency digital terpercaya yang siap membantu usaha kamu terhubung dengan dunia digital dengan mudah dan efisien.</p>
+                            <p>Ibedes Studio adalah agency digital terpercaya yang siap membantu usaha kamu terhubung dengan dunia digital dengan mudah dan efisien. 🚀</p>
                         </div>
                     </div>
                 </div>
@@ -79,7 +80,7 @@
                         </div>
                         <h3>Manajemen Sosial Media</h3>
                         <p>Tingkatkan engagement, jangkau lebih banyak pelanggan, dan buat bisnismu makin dikenal.</p>
-                        <a href="#" class="service-link">
+                        <a href="social-media.html" class="service-link">
                             Pelajari Lebih Lanjut
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -90,7 +91,7 @@
                         </div>
                         <h3>Pembuatan Website</h3>
                         <p>Tampilkan produk atau jasa kamu secara profesional dengan website yang menarik dan user-friendly.</p>
-                        <a href="#" class="service-link">
+                        <a href="web-development.html" class="service-link">
                             Pelajari Lebih Lanjut
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -101,7 +102,7 @@
                         </div>
                         <h3>Periklanan Digital</h3>
                         <p>Strategi iklan yang tepat sasaran untuk meningkatkan penjualanmu secara signifikan.</p>
-                        <a href="#" class="service-link">
+                        <a href="digital-ads.html" class="service-link">
                             Pelajari Lebih Lanjut
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -165,8 +166,11 @@
                             Ibedestudio@gmail.com
                         </a>
                     </div>
-                    <a href="#" class="primary-button large">Mulai Sekarang</a>
-                </div>
+                    <div class="whatsapp-form">
+                            <a href="https://wa.link/b1hzai" class="primary-button large">Mulai Sekarang</a>
+                        </div>
+                    </div>
+                </div>  
             </div>
         </section>
     </main>
@@ -179,7 +183,7 @@
                     
                     <div class="social-links">
                         <a href="https://www.instagram.com/Ibedes_studio/" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.facebook.com/ibedestudio/" class="social-link"><i class="fab fa-facebook"></i></a>
                         <a href="https://www.tiktok.com/@Ibedes_studio" class="social-link"><i class="fab fa-tiktok"></i></a>
                         <a href="https://bento.me/ibedes" class="social-link"><i class="fa-solid fa-link"></i></a>
                     </div>
@@ -209,42 +213,56 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const navRight = document.querySelector('.nav-right');
-        const header = document.querySelector('.header');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            navRight.classList.toggle('active');
-            document.body.style.overflow = navRight.classList.contains('active') ? 'hidden' : '';
-        });
+        // Dot Navigation Functionality
+        const sections = document.querySelectorAll('section[id]');
+        const dotLinks = document.querySelectorAll('.dot-nav a');
+        const dotNav = document.querySelector('.dot-nav');
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (navRight.classList.contains('active') && 
-                !navRight.contains(e.target) && 
-                !mobileMenuBtn.contains(e.target)) {
-                navRight.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
+        function activateNavDot() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
 
-        // Header scroll effect
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
+            // Check if near the footer to hide dot navigation
+            if (scrollY + windowHeight > documentHeight - 100) {
+                dotNav.classList.add('hidden');
             } else {
-                header.classList.remove('scrolled');
+                dotNav.classList.remove('hidden');
             }
-        });
 
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navRight.classList.remove('active');
-                document.body.style.overflow = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - windowHeight / 3;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                    dotLinks.forEach(link => {
+                        link.classList.remove('active', 'pulse');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            if (!link.classList.contains('active')) {
+                                link.classList.add('active', 'pulse');
+                                setTimeout(() => link.classList.remove('pulse'), 500);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // Smooth scroll for dot navigation
+        dotLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
+
+        window.addEventListener('scroll', activateNavDot);
+        window.addEventListener('load', activateNavDot);
     </script>
 </body>
 </html>
