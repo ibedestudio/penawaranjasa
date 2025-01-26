@@ -41,6 +41,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const dotNav = document.querySelector('.dot-nav');
     const footer = document.querySelector('.footer');
     
+    // Active section detection for dot navigation
+    const sections = document.querySelectorAll('section[id]');
+    const dots = document.querySelectorAll('.dot-nav a');
+    
+    function activateNavDot() {
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - windowHeight / 3;
+            const sectionBottom = sectionTop + section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if(scrollY >= sectionTop && scrollY < sectionBottom) {
+                dots.forEach(dot => {
+                    dot.classList.remove('active');
+                    if(dot.getAttribute('href') === `#${sectionId}`) {
+                        dot.classList.add('active');
+                        // Tambahkan class untuk animasi
+                        dot.classList.add('pulse');
+                        setTimeout(() => dot.classList.remove('pulse'), 500);
+                    }
+                });
+            }
+        });
+        
+        // Check if we're at the top of the page
+        if(scrollY < 100) {
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+                if(dot.getAttribute('href') === '#') {
+                    dot.classList.add('active');
+                    dot.classList.add('pulse');
+                    setTimeout(() => dot.classList.remove('pulse'), 500);
+                }
+            });
+        }
+    }
+    
     function checkFooterVisibility() {
         if (!dotNav || !footer) return;
         
@@ -54,18 +93,63 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Smooth scroll with easing
+    function easeInOutQuad(t) {
+        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+    
+    function smoothScroll(target, duration) {
+        const start = window.pageYOffset;
+        const distance = target - start;
+        let startTime = null;
+        
+        function animation(currentTime) {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const progress = Math.min(timeElapsed / duration, 1);
+            
+            window.scrollTo(0, start + (distance * easeInOutQuad(progress)));
+            
+            if (timeElapsed < duration) {
+                requestAnimationFrame(animation);
+            }
+        }
+        
+        requestAnimationFrame(animation);
+    }
+
+    // Event listeners for dot navigation
+    dots.forEach(dot => {
+        dot.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            
+            if (targetId === '#') {
+                smoothScroll(0, 1000);
+            } else {
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    const targetPosition = targetSection.offsetTop - 50;
+                    smoothScroll(targetPosition, 1000);
+                }
+            }
+        });
+    });
+
     // Check on scroll with throttling
     let ticking = false;
     window.addEventListener('scroll', function() {
         if (!ticking) {
             window.requestAnimationFrame(function() {
                 checkFooterVisibility();
+                activateNavDot();
                 ticking = false;
             });
             ticking = true;
         }
     });
 
-    // Initial check
+    // Initial checks
     checkFooterVisibility();
+    activateNavDot();
 }); 
